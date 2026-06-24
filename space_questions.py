@@ -4,10 +4,12 @@
 # ///
 
 from pathlib import Path
+import sys
 
 
 def main() -> None:
-    questions = Path("questions")
+    questions = Path("questions") / sys.argv[1]
+    assert questions.exists()
     question_dirs = sorted(item for item in questions.iterdir() if item.is_dir())
 
     for question_dir in question_dirs:

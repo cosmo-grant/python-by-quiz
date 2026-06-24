@@ -4,11 +4,12 @@
 # ///
 
 from pathlib import Path
-
+import sys
 
 def main() -> None:
     # avoid any clobbering
-    questions = Path("questions")
+    questions = Path("questions") / sys.argv[1]
+    assert questions.exists()
     old_questions = Path("old_questions")
     questions.move(old_questions)
     questions.mkdir()

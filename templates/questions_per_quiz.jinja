@@ -1,0 +1,21 @@
+// Generated automatically. Do not edit.
+
+const QUESTIONS_PER_QUIZ = {
+  {% for title, questions in questions_per_quiz %}
+  {{title}}: [
+    {% for preface, code, (answer0, answer1, answer2), correct, explanation in questions %}
+    {
+      preface: `{{preface}}`,
+      code: `{{code}}`,
+      answers: [
+        `{{answer0}}`,
+        `{{answer1}}`,
+        `{{answer2}}`,
+      ],
+      correct: {{correct}},
+      explanation: `{{explanation}}`,
+    },
+    {% endfor %}
+  ],
+  {% endfor %}
+};

@@ -1,23 +1,26 @@
 class Quiz {
   constructor() {
     this.getElements();
-    this.populateNavBar();
+    this.populateQuizChoices();
     this.setupEventListeners();
 
     const savedState = this.loadState();
     if (savedState) {
-      // offer user choice to continue or resume
+      // Offer user choice to resume or start afresh.
       this.showContinueDialog();
+      const questions = QUESTIONS_PER_QUIZ[savedState.title];
       this.savedQuestionDialog.textContent = savedState.currentQuestion + 1;
       this.savedScoreDialog.textContent = savedState.answers.filter(
         (selectedAnswer, questionIndex) =>
-          selectedAnswer === QUESTIONS[questionIndex].correct,
+          selectedAnswer === questions[questionIndex].correct,
       ).length;
-      this.totalQuestionsDialog.textContent = QUESTIONS.length;
+      this.totalQuestionsDialog.textContent = questions.length;
 
       this.continueFromSavedButton.addEventListener("click", () => {
+        this.currentQuiz = savedState.title;
         this.currentQuestion = savedState.currentQuestion;
         this.answers = savedState.answers;
+        this.questions = QUESTIONS_PER_QUIZ[this.currentQuiz];
         this.startQuiz();
       });
 
@@ -33,7 +36,7 @@ class Quiz {
   getElements() {
     this.mainContent = document.getElementById("main-content");
     this.splashScreen = document.getElementById("splash-screen");
-
+    this.quizChoices = document.getElementById("quiz-choices");
     this.finalScoreSection = document.getElementById("final-score-section");
     this.finalScoreValue = document.getElementById("final-score-value");
     this.finalScoreMax = document.getElementById("final-score-max");
@@ -43,7 +46,6 @@ class Quiz {
     this.codeDisplay = document.getElementById("code-display");
     this.prefaceText = document.getElementById("preface-text");
     this.nextButton = document.getElementById("next-button");
-    this.startQuizButton = document.getElementById("start-quiz-button");
     this.answerButtons = [
       document.getElementById("answer-0"),
       document.getElementById("answer-1"),
@@ -74,12 +76,25 @@ class Quiz {
   }
 
   populateNavBar() {
-    for (let i = 0; i < QUESTIONS.length; i++) {
+    // clear any existing buttons
+    this.navBar.innerHTML = "";
+
+    // add a button per question
+    for (let i = 0; i < this.questions.length; i++) {
       const button = document.createElement("button");
       button.textContent = i + 1;
       this.navBar.appendChild(button);
     }
     this.navButtons = [...this.navBar.children];
+  }
+
+  populateQuizChoices() {
+    Object.keys(QUESTIONS_PER_QUIZ).forEach(title => {
+      const button = document.createElement("button");
+      button.textContent = title;
+      this.quizChoices.appendChild(button);
+    })
+    this.quizButtons = [...this.quizChoices.children];
   }
 
   showContinueDialog() {
@@ -120,13 +135,11 @@ class Quiz {
     // So the direct cause of behaviour is always clicks.
     // We need guards though, e.g. to prevent clicking disabled or hidden buttons.
     document.addEventListener("keydown", (event) => {
-      // Enter or Space to start, finish, restart, or move to next question
+      // Enter or Space to finish, restart, or move to next question
       // Use `else if` even when the conditions are statically incompatible to prevent races.
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        if (!this.splashScreen.hidden) {
-          this.startQuizButton.dispatchEvent(new Event("click"));
-        } else if (this.nextButton.style.display === "block") {
+        if (this.nextButton.style.display === "block") {
           this.nextButton.dispatchEvent(new Event("click"));
         } else if (
           this.finishButton.style.display === "block" &&
@@ -170,7 +183,17 @@ class Quiz {
       }
     });
 
-    this.startQuizButton.addEventListener("click", () => this.startQuiz());
+    this.quizButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        // Set quiz-specific state.
+        this.currentQuiz = button.textContent;
+        this.questions = QUESTIONS_PER_QUIZ[this.currentQuiz];
+        this.answers = Array(this.questions.length).fill(null);
+
+        this.startQuiz();
+      });
+    }
+    )
 
     this.answerButtons.forEach((button, index) => {
       button.addEventListener("click", () => {
@@ -178,21 +201,23 @@ class Quiz {
       });
     });
 
-    this.navButtons.forEach((button, index) =>
-      button.addEventListener("click", () => this.loadQuestion(index)),
-    );
     this.nextButton.addEventListener("click", () => this.nextQuestion());
     this.finishButton.addEventListener("click", () => this.finishQuiz());
     this.restartButton.addEventListener("click", () => this.restart());
+    this.restartFromSavedButton.addEventListener("click", () => this.restart());
   }
 
   startQuiz() {
+    this.populateNavBar();
+    this.navButtons.forEach((button, index) =>
+      button.addEventListener("click", () => this.loadQuestion(index)),
+    );
     this.showMainContent();
     this.finishButton.style.display = "none";
     for (let i = 0; i <= this.currentQuestion; i++) {
       this.navButtons[i].disabled = false;
     }
-    for (let i = this.currentQuestion + 1; i < QUESTIONS.length; i++) {
+    for (let i = this.currentQuestion + 1; i < this.questions.length; i++) {
       this.navButtons[i].disabled = true;
     }
     // Restore nav button classes for previously answered questions
@@ -201,7 +226,7 @@ class Quiz {
       navBtn.classList.remove("viewing", "correct");
       if (
         this.answers[i] !== null &&
-        this.answers[i] === QUESTIONS[i].correct
+        this.answers[i] === this.questions[i].correct
       ) {
         navBtn.classList.add("correct");
       }
@@ -212,14 +237,14 @@ class Quiz {
   computeScore() {
     return this.answers.filter(
       (selectedAnswer, questionIndex) =>
-        selectedAnswer === QUESTIONS[questionIndex].correct,
+        selectedAnswer === this.questions[questionIndex].correct,
     ).length;
   }
 
   restart() {
+    // Make it as though coming to the site for the very first time.
     this.clearState();
     this.currentQuestion = 0;
-    this.answers = Array(QUESTIONS.length).fill(null);
     this.showSplashScreen();
   }
 
@@ -228,7 +253,7 @@ class Quiz {
   }
 
   loadQuestion(index) {
-    const question = QUESTIONS[index];
+    const question = this.questions[index];
     this.viewedQuestion = index;
     this.codeDisplay.textContent = question.code;
     this.codeDisplay.removeAttribute("data-highlighted"); // else highlightjs skips re-highlighting
@@ -281,7 +306,7 @@ class Quiz {
       this.answerButtons[question.correct].classList.add("correct");
       this.explanationText.innerHTML = question.explanation;
       this.explanationSection.style.display = "block";
-      if (this.currentQuestion === QUESTIONS.length - 1) {
+      if (this.currentQuestion === this.questions.length - 1) {
         this.nextButton.style.display = "none";
         this.finishButton.style.display = "block";
       } else {
@@ -296,7 +321,7 @@ class Quiz {
       button.disabled = true;
     });
 
-    const question = QUESTIONS[this.currentQuestion];
+    const question = this.questions[this.currentQuestion];
     const correctIndex = question.correct;
     const isCorrect = correctIndex === selectedIndex;
     this.answers[this.currentQuestion] = selectedIndex;
@@ -312,7 +337,7 @@ class Quiz {
       navBtn.classList.add("correct");
     }
 
-    if (this.currentQuestion === QUESTIONS.length - 1) {
+    if (this.currentQuestion === this.questions.length - 1) {
       this.nextButton.style.display = "none";
       this.finishButton.style.display = "block";
     } else {
@@ -334,10 +359,10 @@ class Quiz {
     this.clearState();
     this.showFinalScoreSection();
     this.finalScoreValue.textContent = this.computeScore();
-    this.finalScoreMax.textContent = QUESTIONS.length;
+    this.finalScoreMax.textContent = this.questions.length;
 
     let message = "";
-    const percentage = (this.computeScore() / QUESTIONS.length) * 100; // use % in case question count changes
+    const percentage = (this.computeScore() / this.questions.length) * 100; // use % in case question count changes
 
     if (percentage === 100) {
       message = "&#x1f92f;";
@@ -354,22 +379,24 @@ class Quiz {
     this.finalScoreMessage.innerHTML = message;
   }
 
-  // should be called after any state-changing action
+  // There is at most one quiz in progress.
+  // The user can either resume that quiz or start completely afresh (which clears saved state).
+  // saveState() should be called after any state-changing action.
   saveState() {
     const state = {
+      title: this.currentQuiz,
       currentQuestion: this.currentQuestion,
       answers: this.answers,
     };
     localStorage.setItem(
-      "python-concurrency-quiz-state",
+      "python-fundamentals-quizzes",
       JSON.stringify(state),
     );
   }
 
-  // TODO: what if questions updated since last session?
   loadState() {
     try {
-      const savedState = localStorage.getItem("python-concurrency-quiz-state");
+      const savedState = localStorage.getItem("python-fundamentals-quizzes");
       if (savedState) {
         return JSON.parse(savedState);
       }
@@ -380,7 +407,7 @@ class Quiz {
   }
 
   clearState() {
-    localStorage.removeItem("python-concurrency-quiz-state");
+    localStorage.removeItem("python-fundamentals-quizzes");
   }
 }
 
