@@ -115,17 +115,18 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: var(--space-xl);
   padding: var(--space-lg);
   text-align: center;
 }
 
 #splash-screen h1 {
-  margin: 0 0 var(--space-md) 0;
+  margin: 0;
   font-size: 2.125rem;
 }
 
 #splash-screen p {
-  margin: 0 0 var(--space-md) 0;
+  margin: 0;
 }
 
 #splash-screen p.muted {
@@ -147,7 +148,6 @@ body {
   gap: var(--space-sm);
   width: 100%;
   max-width: 30rem;
-  margin-top: var(--space-md);
 }
 
 #quiz-choices button {
