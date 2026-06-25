@@ -9,6 +9,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 import random
 
+
 def get_quiz_questions(quiz):
     dirs = [path for path in quiz.iterdir() if path.is_dir()]
     dirs.sort()
@@ -28,9 +29,12 @@ def get_quiz_questions(quiz):
 
     return questions
 
+
 def main() -> None:
     quiz_dirs = [path for path in Path("questions").iterdir() if path.is_dir()]
-    questions_per_quiz = {quiz_dir.name: get_quiz_questions(quiz_dir) for quiz_dir in quiz_dirs}
+    questions_per_quiz = {
+        quiz_dir.name: get_quiz_questions(quiz_dir) for quiz_dir in quiz_dirs
+    }
 
     env = Environment(loader=FileSystemLoader("templates/"))
     template = env.get_template("questions_per_quiz.jinja")

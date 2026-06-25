@@ -6,6 +6,7 @@
 from pathlib import Path
 import sys
 
+
 def main() -> None:
     # avoid any clobbering
     questions = Path("questions") / sys.argv[1]

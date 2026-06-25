@@ -70,8 +70,7 @@ def main() -> None:
     target_notes = [
         note
         for note in notes
-        if args.tag in note.tags
-        and note.note_type()["name"] == "Code output"  # ty:ignore[not-subscriptable]
+        if args.tag in note.tags and note.note_type()["name"] == "Code output"  # ty:ignore[not-subscriptable]
     ]
     print(f"Found {len(target_notes)} target notes.")
 

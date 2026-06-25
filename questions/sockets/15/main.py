@@ -1,8 +1,10 @@
 import socket
 from threading import Thread
 
+
 def client():
     socket.create_connection(("127.0.0.1", 44444))
+
 
 srv1 = socket.socket()
 srv1.bind(("127.0.0.1", 44444))

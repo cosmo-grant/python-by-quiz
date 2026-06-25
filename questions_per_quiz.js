@@ -1,9 +1,7 @@
 // Generated automatically. Do not edit.
 
 const QUESTIONS_PER_QUIZ = {
-  
   sockets: [
-    
     {
       preface: ``,
       code: `import socket
@@ -30,7 +28,7 @@ print(conn.recv(1))
       correct: 0,
       explanation: `A minimal example of client-server socket communication.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -47,7 +45,7 @@ sock.connect(("127.0.0.1", 65432))  # nothing listening
       correct: 0,
       explanation: `The kernel replies with a TCP RST.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -79,7 +77,7 @@ print(conn.recv(1))
 
 <code>create_connection()</code> returns a connected socket.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -108,7 +106,7 @@ print(type(conn))
 
 But all still sockets.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -131,7 +129,7 @@ print(conn.getsockname())
       correct: 1,
       explanation: `<code>accept()</code> returns a new local socket, which shares the listener's address.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -158,7 +156,7 @@ b''
       correct: 1,
       explanation: `<code>recv()</code> returns empty when the peer has closed the connection.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -178,7 +176,7 @@ client.connect(("127.0.0.1", 65432))
       correct: 0,
       explanation: `<code>bind()</code> reserves the port, but the kernel rejects connections until you call <code>listen()</code>.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -207,7 +205,7 @@ b'x'
       correct: 0,
       explanation: `<code>recv(n)</code> blocks until data is available or the connection is closed, then returns up to <code>n</code> bytes.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -236,7 +234,7 @@ b'x'
       correct: 0,
       explanation: `<code>recv(n)</code> blocks until data is available or the connection is closed, then returns up to <code>n</code> bytes.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -256,7 +254,7 @@ print(res)
 
 For a blocking socket, <code>accept()</code> blocks until a connection is available.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -275,7 +273,7 @@ print(res)
       correct: 2,
       explanation: `For a non-blocking socket, operations fail if they can't be completed immediately.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -294,7 +292,7 @@ sock2.bind(("127.0.0.1", 65432))
       correct: 1,
       explanation: ``,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -314,7 +312,7 @@ sock.bind(("127.0.0.1", 55555))
 
 A cryptic message, no?`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -335,15 +333,11 @@ srv2 = socket.socket()
 srv2.bind(("127.0.0.1", 65432))
 srv2.listen()
 `,
-      answers: [
-        ``,
-        ``,
-        `OSError: [Errno 48] Address already in use`,
-      ],
+      answers: [``, ``, `OSError: [Errno 48] Address already in use`],
       correct: 2,
       explanation: `The kernel puts the connection's closing side in <code>TIME_WAIT</code> for a while, else delayed packets might bleed into fresh connections.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -377,7 +371,7 @@ srv2.bind(("127.0.0.1", 44444))
 
 <code>SO_REUSEADDR</code> tells the kernel to allow binds to <code>TIME_WAIT</code>s.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -387,11 +381,7 @@ sock.listen()
 ip, _ = sock.getsockname()
 print(ip)
 `,
-      answers: [
-        ``,
-        ``,
-        ``,
-      ],
+      answers: [``, ``, ``],
       correct: 0,
       explanation: `<code>listen()</code> without <code>bind()</code>
 
@@ -400,7 +390,7 @@ print(ip)
 
 The kernel chooses an ephemeral port.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -409,15 +399,11 @@ sock = socket.socket()
 sock.bind(("127.0.0.1", 44444))
 sock.listen()
 sock.connect(("127.0.0.1", 55555))`,
-      answers: [
-        ``,
-        ``,
-        ``,
-      ],
+      answers: [``, ``, ``],
       correct: 0,
       explanation: `Calling <code>sock.listen()</code> makes <code>sock</code> a passive or listening socket.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -448,7 +434,7 @@ print(conn.recv(1))
 
 <code>srv.close()</code> leaves untouched <code>conn</code> and the connection.`,
     },
-    
+
     {
       preface: ``,
       code: `import socket
@@ -486,11 +472,9 @@ TimeoutError: timed out
 
 But it's the kernel that handshakes and buffers, so the client can still connect and send.`,
     },
-    
   ],
-  
+
   concurrency: [
-    
     {
       preface: `<p>What does this output?</p>
 `,
@@ -520,7 +504,7 @@ here
 <p>Simple. Slow.</p>
 `,
     },
-    
+
     {
       preface: `<p>Let's move the work into threads. Output?</p>
 `,
@@ -571,7 +555,7 @@ here
 </p>
 `,
     },
-    
+
     {
       preface: `<p>What if we <code>join()</code> them?</p>
 `,
@@ -614,7 +598,7 @@ done
       explanation: `<p><code>join()</code> blocks until the receiver completes.</p>
 `,
     },
-    
+
     {
       preface: `<p>Does re-ordering make a difference?</p>
 `,
@@ -665,7 +649,7 @@ done
 </p>
 `,
     },
-    
+
     {
       preface: `<p>How about cpu-bound threads?</p>
 `,
@@ -713,7 +697,7 @@ done
 </p>
 `,
     },
-    
+
     {
       preface: `<p>Ok, let's <code>join()</code> again.</p>
 `,
@@ -756,7 +740,7 @@ done
       explanation: `<p>Same as before: <code>join()</code> blocks until the receiver completes.</p>
 `,
     },
-    
+
     {
       preface: `<p>Does re-ordering make a difference?</p>
 `,
@@ -804,7 +788,7 @@ here
 <p>But they're still cpu-bound so the total time is unchanged.</p>
 `,
     },
-    
+
     {
       preface: `<p>Same as the previous question, no?</p>
 `,
@@ -850,7 +834,7 @@ here
 </p>
 `,
     },
-    
+
     {
       preface: `<p>What if threads go bad?</p>
 `,
@@ -893,7 +877,7 @@ here
 </p>
 `,
     },
-    
+
     {
       preface: `<p>Let's swap threads for processes.</p>
 `,
@@ -940,7 +924,7 @@ done
 <p>But for io-bound work threads might be the better choice.</p>
 `,
     },
-    
+
     {
       preface: `<p>What about cpu-bound work?</p>
 `,
@@ -988,7 +972,7 @@ here
 </p>
 `,
     },
-    
+
     {
       preface: `<p>What if processes go bad?</p>
 `,
@@ -1027,7 +1011,7 @@ here
 </p>
 `,
     },
-    
+
     {
       preface: `<p>A third approach: <code>asyncio</code>.</p>
 `,
@@ -1072,7 +1056,7 @@ here
 <p>Just creating a coroutine doens't schedule it on the event loop.</p>
 `,
     },
-    
+
     {
       preface: `<p>Ok, so let's <code>await</code>.</p>
 `,
@@ -1117,7 +1101,7 @@ here
 <p>No speedup yet.</p>
 `,
     },
-    
+
     {
       preface: `<p>We need async-aware functions, like <code>asyncio.sleep()</code>, right?</p>
 `,
@@ -1162,7 +1146,7 @@ done
 </p>
 `,
     },
-    
+
     {
       preface: `<p>What if we <code>gather()</code> them instead?</p>
 `,
@@ -1209,7 +1193,7 @@ done
 </p>
 `,
     },
-    
+
     {
       preface: `<p>
   What if we <code>gather()</code> <em>and</em> <code>asyncio.sleep()</code>?
@@ -1252,7 +1236,7 @@ done
       explanation: `<p>Speedup at last!</p>
 `,
     },
-    
+
     {
       preface: `<p>Remember threads?</p>
 `,
@@ -1307,7 +1291,7 @@ here
 </p>
 `,
     },
-    
+
     {
       preface: `<p>Know the differences between coroutines and tasks?</p>
 `,
@@ -1341,7 +1325,7 @@ in foo
 <p>But the main coroutine keeps control.</p>
 `,
     },
-    
+
     {
       preface: `<p>How about this?</p>
 `,
@@ -1373,7 +1357,7 @@ in foo
       explanation: `<p>Awaiting a task passes control to the event loop.</p>
 `,
     },
-    
+
     {
       preface: `<p>And this?</p>
 `,
@@ -1409,7 +1393,7 @@ in bar
       explanation: `<p>Awaiting a coroutine doesn't pass control to the event loop.</p>
 `,
     },
-    
+
     {
       preface: `<p>Last one on this theme.</p>
 `,
@@ -1445,7 +1429,7 @@ in foo
       explanation: `<p>Awaiting a task passes control to the event loop.</p>
 `,
     },
-    
+
     {
       preface: `<p>What if awaitables go bad?</p>
 `,
@@ -1494,7 +1478,5 @@ done
 </p>
 `,
     },
-    
   ],
-  
 };

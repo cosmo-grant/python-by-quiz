@@ -89,11 +89,11 @@ class Quiz {
   }
 
   populateQuizChoices() {
-    Object.keys(QUESTIONS_PER_QUIZ).forEach(title => {
+    Object.keys(QUESTIONS_PER_QUIZ).forEach((title) => {
       const button = document.createElement("button");
       button.textContent = title;
       this.quizChoices.appendChild(button);
-    })
+    });
     this.quizButtons = [...this.quizChoices.children];
   }
 
@@ -183,7 +183,7 @@ class Quiz {
       }
     });
 
-    this.quizButtons.forEach(button => {
+    this.quizButtons.forEach((button) => {
       button.addEventListener("click", () => {
         // Set quiz-specific state.
         this.currentQuiz = button.textContent;
@@ -192,8 +192,7 @@ class Quiz {
 
         this.startQuiz();
       });
-    }
-    )
+    });
 
     this.answerButtons.forEach((button, index) => {
       button.addEventListener("click", () => {
@@ -388,10 +387,7 @@ class Quiz {
       currentQuestion: this.currentQuestion,
       answers: this.answers,
     };
-    localStorage.setItem(
-      "python-fundamentals-quizzes",
-      JSON.stringify(state),
-    );
+    localStorage.setItem("python-fundamentals-quizzes", JSON.stringify(state));
   }
 
   loadState() {
