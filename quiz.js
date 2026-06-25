@@ -132,15 +132,17 @@ class Quiz {
       // Enter or Space to finish, restart, or move to next question
       // Use `else if` even when the conditions are statically incompatible to prevent races.
       if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
         if (this.nextButton.style.display === "block") {
+          event.preventDefault();
           this.nextButton.click();
         } else if (
           this.finishButton.style.display === "block" &&
           this.finalScoreSection.hidden
         ) {
+          event.preventDefault();
           this.finishButton.click();
         } else if (!this.finalScoreSection.hidden) {
+          event.preventDefault();
           this.restartButton.click();
         }
       }
