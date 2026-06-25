@@ -1,42 +1,41 @@
 # README
 
-https://cosmo-grant.github.io/python-concurrency-quiz/
+https://cosmo-grant.github.io/python-by-quiz/
 
 ## What is this?
 
-A quiz about Python concurrency.
+A collection of quizzes about Python.
 A practice project.
 A bit of fun.
 
-## What does it cover?
+## What do they cover?
 
-Threads, processes, asyncio.
-The fundamental concepts, not the high-level APIs.
+Concurrency, sockets, and more to come.
+Concepts, not APIs.
 As of 3.14, with the GIL.
 
-## But it doesn't cover xyz!
+## But they don't cover xyz!
 
-It focuses on the fundamentals.
-And no one wants a 50 question quiz.
+They focus on the fundamentals.
+And no one wants 50 question quizzes.
 
 ## Did you use LLMs?
 
-I used Opus 4.5 in OpenCode for styling.
-Transcripts in `transcripts/`.
+For styling, yes.
+Chunkier transcripts in `transcripts/`.
 I wrote everything else, following the example of [fstrings-wtf](https://github.com/mitsuhiko/fstrings-wtf/).
 
-## Don't the timings depend on the machine?
+## Don't the timings in some outputs depend on the machine?
 
 Yes.
 Whether it's single- or multi-core.
 Whether it's fast or slow.
 Whether it's busy or idle.
 Whether it's on battery.
-Whether the power cuts out mid-execution.
 And more.
 
 Some snippets have comments asking you to assume this or that.
-Generally, assume a typical machine on a quiet day.
+Generally, assume a typical machine in typical conditions.
 I checked the snippets on a MacBook Pro M3.
 
 ## How did you check the snippets?
