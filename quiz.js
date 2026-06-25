@@ -21,9 +21,6 @@ class Quiz {
         this.startQuiz();
       });
 
-      this.restartFromSavedButton.addEventListener("click", () => {
-        this.restart();
-      });
     } else {
       // no saved state; fresh start
       this.restart();
