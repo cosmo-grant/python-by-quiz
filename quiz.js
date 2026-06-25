@@ -8,13 +8,10 @@ class Quiz {
     if (savedState) {
       // Offer user choice to resume or start afresh.
       this.showContinueDialog();
-      const questions = QUESTIONS_PER_QUIZ[savedState.title];
+      this.savedTitleDialog.textContent = savedState.title;
       this.savedQuestionDialog.textContent = savedState.currentQuestion + 1;
-      this.savedScoreDialog.textContent = savedState.answers.filter(
-        (selectedAnswer, questionIndex) =>
-          selectedAnswer === questions[questionIndex].correct,
-      ).length;
-      this.totalQuestionsDialog.textContent = questions.length;
+      this.totalQuestionsDialog.textContent =
+        QUESTIONS_PER_QUIZ[savedState.title].length;
 
       this.continueFromSavedButton.addEventListener("click", () => {
         this.currentQuiz = savedState.title;
@@ -62,8 +59,8 @@ class Quiz {
     this.navBar = document.getElementById("nav-bar");
 
     this.continueDialog = document.getElementById("continue-dialog");
+    this.savedTitleDialog = document.getElementById("saved-title-dialog");
     this.savedQuestionDialog = document.getElementById("saved-question-dialog");
-    this.savedScoreDialog = document.getElementById("saved-score-dialog");
     this.totalQuestionsDialog = document.getElementById(
       "total-questions-dialog",
     );
