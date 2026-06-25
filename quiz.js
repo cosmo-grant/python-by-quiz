@@ -137,14 +137,14 @@ class Quiz {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         if (this.nextButton.style.display === "block") {
-          this.nextButton.dispatchEvent(new Event("click"));
+          this.nextButton.click();
         } else if (
           this.finishButton.style.display === "block" &&
           this.finalScoreSection.hidden
         ) {
-          this.finishButton.dispatchEvent(new Event("click"));
+          this.finishButton.click();
         } else if (!this.finalScoreSection.hidden) {
-          this.restartButton.dispatchEvent(new Event("click"));
+          this.restartButton.click();
         }
       }
 
@@ -156,7 +156,7 @@ class Quiz {
       ) {
         event.preventDefault();
         const navButton = this.navButtons[this.viewedQuestion - 1];
-        navButton.dispatchEvent(new Event("click"));
+        navButton.click();
       }
 
       if (
@@ -166,7 +166,7 @@ class Quiz {
       ) {
         event.preventDefault();
         const navButton = this.navButtons[this.viewedQuestion + 1];
-        navButton.dispatchEvent(new Event("click"));
+        navButton.click();
       }
       // Number keys to select answers.
       if (
@@ -176,7 +176,7 @@ class Quiz {
       ) {
         event.preventDefault();
         const answerIndex = parseInt(event.key) - 1;
-        this.answerButtons[answerIndex].dispatchEvent(new Event("click"));
+        this.answerButtons[answerIndex].click();
       }
     });
 
