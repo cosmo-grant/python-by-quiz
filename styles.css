@@ -140,19 +140,34 @@ body {
   color: var(--color-primary-hover);
 }
 
-#start-quiz-button {
+/* Quiz choices: one button per quiz, vertical list that scales with count */
+#quiz-choices {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 30rem;
   margin-top: var(--space-md);
-  padding: var(--space-sm) var(--space-lg);
-  font-size: var(--font-size-base);
-  color: #ffffff;
-  background-color: var(--color-primary);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
-#start-quiz-button:hover {
-  background-color: var(--color-primary-hover);
+#quiz-choices button {
+  width: 100%;
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.1s,
+    border-color 0.1s,
+    color 0.1s;
+}
+
+#quiz-choices button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 #splash-screen footer {
