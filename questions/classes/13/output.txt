@@ -1,0 +1,2 @@
+in B
+AttributeError: 'super' object has no attribute 'meth'

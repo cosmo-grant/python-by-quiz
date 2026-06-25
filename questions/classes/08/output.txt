@@ -1,0 +1,2 @@
+(<class '__main__.C'>, 'foo')
+(<class '__main__.C'>, 'foo')

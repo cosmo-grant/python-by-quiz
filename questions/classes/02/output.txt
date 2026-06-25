@@ -1,0 +1,1 @@
+NameError: name 'next_account_number' is not defined. Did you mean: 'self.next_account_number'?

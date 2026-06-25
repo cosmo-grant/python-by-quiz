@@ -1,0 +1,2 @@
+('foo',)
+(<__main__.C object at 0x100>, 'foo')

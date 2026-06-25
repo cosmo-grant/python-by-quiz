@@ -1,0 +1,3 @@
+<__main__.Foo object at 0x100>
+in set
+3
