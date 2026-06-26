@@ -20,7 +20,6 @@ class Quiz {
         this.questions = QUESTIONS_PER_QUIZ[this.currentQuiz];
         this.startQuiz();
       });
-
     } else {
       // no saved state; fresh start
       this.restart();

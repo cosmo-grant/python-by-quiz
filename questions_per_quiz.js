@@ -3,314 +3,350 @@
 const QUESTIONS_PER_QUIZ = {
   sockets: [
     {
-      preface: ``,
+      preface: `<p>What does this output?</p>
+`,
       code: `import socket
 from threading import Thread
 
+
 def client():
     sock = socket.socket()
-    sock.connect(("127.0.0.1", 65432))
+    sock.connect(("127.0.0.1", 44444))
     sock.send(b"x")
 
+
 srv = socket.socket()
-srv.bind(("127.0.0.1", 65432))
+srv.bind(("127.0.0.1", 44444))
 srv.listen()
 Thread(target=client).start()
 conn, _ = srv.accept()
 print(conn.recv(1))
 `,
       answers: [
+        `Not me!
+
+(Tip: Advance via <Space> or <Enter>.)
+`,
+        `Not me!
+
+(Tip: answer via 1, 2, 3.)
+`,
         `b'x'
 `,
-        ``,
-        ``,
       ],
-      correct: 0,
-      explanation: `A minimal example of client-server socket communication.`,
+      correct: 2,
+      explanation: `<p>A minimal example of socket communication.</p>
+`,
     },
 
     {
-      preface: ``,
-      code: `import socket
-
-sock = socket.socket()
-sock.connect(("127.0.0.1", 65432))  # nothing listening
+      preface: `<p>How about this?</p>
 `,
-      answers: [
-        `ConnectionRefusedError: [Errno 111] Connection refused
-`,
-        ``,
-        ``,
-      ],
-      correct: 0,
-      explanation: `The kernel replies with a TCP RST.`,
-    },
-
-    {
-      preface: ``,
       code: `import socket
 from threading import Thread
 
+
 def client():
-    sock = socket.create_connection(("127.0.0.1", 65432))
+    sock = socket.create_connection(("127.0.0.1", 44444))
     sock.send(b"x")
 
-srv = socket.create_server(("127.0.0.1", 65432))
+
+srv = socket.create_server(("127.0.0.1", 44444))
 Thread(target=client).start()
 conn, _ = srv.accept()
 print(conn.recv(1))
 `,
       answers: [
+        `b''
+`,
         `b'x'
 `,
-        ``,
-        ``,
+        `None
+`,
       ],
-      correct: 0,
-      explanation: `Convenience functions.
-
-
-
-<code>create_server()</code> returns a bound, listening socket.
-
-
-
-<code>create_connection()</code> returns a connected socket.`,
+      correct: 1,
+      explanation: `<p>As before, but taking advantage of convenience functions.</p>
+`,
     },
 
     {
-      preface: ``,
+      preface: `<p>Let's dig deeper. Output?</p>
+`,
       code: `import socket
 from threading import Thread
 
-def client():
-    conn = socket.create_connection(("127.0.0.1", 65432))
-    print(type(conn))
 
-srv = socket.create_server(("127.0.0.1", 65432))
+def client():
+    conn = socket.create_connection(("127.0.0.1", 44444))
+    print(type(conn).__name__)
+
+
+srv = socket.create_server(("127.0.0.1", 44444))
 Thread(target=client).start()
 conn, _ = srv.accept()
-print(type(srv))
-print(type(conn))
+print(type(srv).__name__)
+print(type(conn).__name__)
 `,
       answers: [
         `<class 'socket.socket'>
 <class 'socket.socket'>
 <class 'socket.socket'>
 `,
-        ``,
-        ``,
+        `ServerSocket
+ClientSocket
+ClientSocket
+`,
+        `socket
+connection
+connection
+`,
       ],
       correct: 0,
-      explanation: `Sockets can play two roles: server sockets (switchboard operators) and client sockets (connection endpoints).
+      explanation: `<p>
+  Sockets can play two roles: servers (switchboard operators) and clients
+  (connection endpoints).
+</p>
 
-But all still sockets.`,
+<p>But they're all just sockets.</p>
+`,
     },
 
     {
-      preface: ``,
+      preface: `<p><code>accept()</code> returns a new local socket, but at what address?</p>
+`,
       code: `import socket
 from threading import Thread
 
-def client():
-    socket.create_connection(("127.0.0.1", 65432))
 
-srv = socket.create_server(("127.0.0.1", 65432))
+def client():
+    socket.create_connection(("127.0.0.1", 44444))
+
+
+srv = socket.create_server(("127.0.0.1", 44444))
 Thread(target=client).start()
 conn, _ = srv.accept()
 print(conn.getsockname())
 `,
       answers: [
-        ``,
-        `('127.0.0.1', 65432)
+        `('0.0.0.0', 44444)
 `,
-        ``,
+        `('127.0.0.1', 0)
+`,
+        `('127.0.0.1', 44444)
+`,
       ],
-      correct: 1,
-      explanation: `<code>accept()</code> returns a new local socket, which shares the listener's address.`,
+      correct: 2,
+      explanation: `<p>New socket. Same address.</p>
+`,
     },
 
     {
-      preface: ``,
+      preface: `<p>How far can you get without a peer?</p>
+`,
       code: `import socket
 from threading import Thread
 
+
 def client():
-    sock = socket.create_connection(("127.0.0.1", 65432))
+    sock = socket.socket()
+    sock.connect(("127.0.0.1", 44444))
+    print("connected")
+    sock.send(b"x")
+    print("sent")
+
+
+srv = socket.create_server(("127.0.0.1", 44444))
+Thread(target=client).start()
+`,
+      answers: [
+        `connected
+sent
+`,
+        `connected
+...
+`,
+        `...
+`,
+      ],
+      correct: 0,
+      explanation: `<p>
+  No <code>accept()</code>. But it's the <em>kernel</em> that handshakes and
+  buffers, so the client can still connect and send.
+</p>
+`,
+    },
+
+    {
+      preface: `<p>How do <code>recv()</code> work?</p>
+`,
+      code: `import socket
+from threading import Thread
+
+
+def client():
+    sock = socket.create_connection(("127.0.0.1", 44444))
     sock.send(b"x")
     sock.close()
 
-srv = socket.create_server(("127.0.0.1", 65432))
+
+srv = socket.create_server(("127.0.0.1", 44444))
 Thread(target=client).start()
 conn, _ = srv.accept()
 print(conn.recv(1))
 print(conn.recv(1))
 `,
       answers: [
-        ``,
+        `b'x'
+...
+`,
+        `b'x'
+ConnectionClosedError: [Errno NN] Connection closed by peer
+`,
         `b'x'
 b''
 `,
-        ``,
       ],
-      correct: 1,
-      explanation: `<code>recv()</code> returns empty when the peer has closed the connection.`,
+      correct: 2,
+      explanation: `<p>
+  <code>recv()</code> returns empty when the peer has closed the connection.
+</p>
+`,
     },
 
     {
-      preface: ``,
-      code: `import socket
-
-srv = socket.socket()
-srv.bind(("127.0.0.1", 65432))
-
-client = socket.socket()
-client.connect(("127.0.0.1", 65432))
+      preface: `<p>What if there's nothing to receive yet?</p>
 `,
-      answers: [
-        `ConnectionRefusedError: [Errno 111] Connection refused
-`,
-        ``,
-        ``,
-      ],
-      correct: 0,
-      explanation: `<code>bind()</code> reserves the port, but the kernel rejects connections until you call <code>listen()</code>.`,
-    },
-
-    {
-      preface: ``,
       code: `import socket
 from threading import Thread
 from time import sleep
 
+
 def client():
-    sock = socket.create_connection(("127.0.0.1", 65432))
+    sock = socket.create_connection(("127.0.0.1", 44444))
     sleep(3)
     sock.send(b"x")
 
-srv = socket.create_server(("127.0.0.1", 65432))
+
+srv = socket.create_server(("127.0.0.1", 44444))
 Thread(target=client).start()
 conn, _ = srv.accept()
 print("here")
 print(conn.recv(1))
 `,
       answers: [
+        `<~3s>
+here
+b'x'
+`,
         `here
 <~3s>
 b'x'
 `,
-        ``,
-        ``,
+        `here
+b''
+`,
       ],
-      correct: 0,
-      explanation: `<code>recv(n)</code> blocks until data is available or the connection is closed, then returns up to <code>n</code> bytes.`,
+      correct: 1,
+      explanation: `<p>
+  <code>recv(n)</code> blocks until data is available, then returns up to
+  <code>n</code> bytes.
+</p>
+`,
     },
 
     {
-      preface: ``,
+      preface: `<p>Double trouble.</p>
+`,
       code: `import socket
 from threading import Thread
 from time import sleep
 
+
 def client():
-    sock = socket.create_connection(("127.0.0.1", 65432))
+    sock = socket.create_connection(("127.0.0.1", 44444))
     sleep(1)
     sock.send(b"x")
     sleep(1)
     sock.send(b"y")
 
-srv = socket.create_server(("127.0.0.1", 65432))
+
+srv = socket.create_server(("127.0.0.1", 44444))
 Thread(target=client).start()
 conn, _ = srv.accept()
 print(conn.recv(2))
 `,
       answers: [
+        `<~2s>
+b'xy'
+`,
+        `<~1s>
+b'x'
+<~1s>
+b'y'
+`,
         `<~1s>
 b'x'
 `,
-        ``,
-        ``,
       ],
-      correct: 0,
-      explanation: `<code>recv(n)</code> blocks until data is available or the connection is closed, then returns up to <code>n</code> bytes.`,
+      correct: 2,
+      explanation: `<p>
+  To repeat: <code>recv(n)</code> blocks until data is available, then returns
+  up to <code>n</code> bytes.
+</p>
+`,
     },
 
     {
-      preface: ``,
+      preface: `<p>What if no one comes to the party?</p>
+`,
       code: `import socket
 
-srv = socket.create_server(("127.0.0.1", 65432))
-res = srv.accept()
-print(res)
+srv = socket.create_server(("127.0.0.1", 44444))
+conn, _ = srv.accept()
+print(conn)
 `,
       answers: [
-        ``,
-        ``,
+        `None
+`,
+        `ConnectionRefusedError
+`,
         `...
 `,
       ],
       correct: 2,
-      explanation: `By default sockets are blocking.
+      explanation: `<p>By default sockets are blocking.</p>
 
-For a blocking socket, <code>accept()</code> blocks until a connection is available.`,
+<p>
+  A blocking socket's <code>accept()</code> blocks until a connection is
+  available.
+</p>
+`,
     },
 
     {
-      preface: ``,
+      preface: `<p>If it doesn't block, what <em>does</em> it do?</p>
+`,
       code: `import socket
 
-srv = socket.create_server(("127.0.0.1", 65432))
+srv = socket.create_server(("127.0.0.1", 44444))
 srv.setblocking(False)
-res = srv.accept()
-print(res)
+conn, _ = srv.accept()
+print(conn)
 `,
       answers: [
-        ``,
-        ``,
-        `BlockingIOError: [Errno 11] Resource temporarily unavailable
+        `...
 `,
-      ],
-      correct: 2,
-      explanation: `For a non-blocking socket, operations fail if they can't be completed immediately.`,
-    },
-
-    {
-      preface: ``,
-      code: `import socket
-
-sock1 = socket.socket()
-sock2 = socket.socket()
-sock1.bind(("127.0.0.1", 65432))
-sock2.bind(("127.0.0.1", 65432))
+        `BlockingIOError
 `,
-      answers: [
-        ``,
-        `OSError: [Errno 98] Address already in use
+        `None
 `,
-        ``,
       ],
       correct: 1,
-      explanation: ``,
-    },
-
-    {
-      preface: ``,
-      code: `import socket
-
-sock = socket.socket()
-sock.bind(("127.0.0.1", 44444))
-sock.bind(("127.0.0.1", 55555))
+      explanation: `<p>
+  For a non-blocking socket, operations fail if they can't be completed
+  immediately.
+</p>
 `,
-      answers: [
-        ``,
-        `OSError: [Errno 22] Invalid argument
-`,
-        ``,
-      ],
-      correct: 1,
-      explanation: `Rebinding a bound port errors.
-
-A cryptic message, no?`,
     },
 
     {
@@ -318,24 +354,47 @@ A cryptic message, no?`,
       code: `import socket
 from threading import Thread
 
-def client():
-    socket.create_connection(("127.0.0.1", 65432))
 
-srv1 = socket.socket()
-srv1.bind(("127.0.0.1", 65432))
-srv1.listen()
+def client():
+    sock = socket.create_connection(("127.0.0.1", 44444))
+    sock.send(b"x")
+
+
+srv1 = socket.create_connection(("127.0.0.1", 44444))
 Thread(target=client).start()
 conn, _ = srv1.accept()
+conn.recv(1)
 conn.close()
 srv1.close()
 
-srv2 = socket.socket()
-srv2.bind(("127.0.0.1", 65432))
-srv2.listen()
+srv2 = socket.create_connection(("127.0.0.1", 44444))
+Thread(target=client).start()
+conn.recv(1)
+conn.close()
+srv1.close()
 `,
-      answers: [``, ``, `OSError: [Errno 48] Address already in use`],
-      correct: 2,
-      explanation: `The kernel puts the connection's closing side in <code>TIME_WAIT</code> for a while, else delayed packets might bleed into fresh connections.`,
+      answers: [
+        `b'x
+b''
+`,
+        `b'x'
+OSError: [Errno 48] Address already in use
+`,
+        `b'x'
+b'x'
+`,
+      ],
+      correct: 1,
+      explanation: `<p>
+  The kernel puts the active closer in <code>TIME_WAIT</code> for a while, else
+  delayed packets might bleed into fresh connections.
+</p>
+
+<p>
+  Set the <code>SO_REUSEADDR</code> option to allow binds to
+  <code>TIME_WAIT</code>s.
+</p>
+`,
     },
 
     {
@@ -343,37 +402,34 @@ srv2.listen()
       code: `import socket
 from threading import Thread
 
+
 def client():
-    socket.create_connection(("127.0.0.1", 44444))
+    sock = socket.create_connection(("127.0.0.1", 44444))
+    sock.send(b"x")
 
-srv1 = socket.socket()
-srv1.bind(("127.0.0.1", 44444))
-srv1.listen()
+
+srv = socket.create_server(("127.0.0.1", 44444))
 Thread(target=client).start()
-conn, _ = srv1.accept()
-conn.close()
-srv1.close()
-
-srv2 = socket.socket()
-srv2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-srv2.bind(("127.0.0.1", 44444))
+conn, _ = srv.accept()
+srv.close()
+print(conn.recv(1))
 `,
       answers: [
-        ``,
-        `OSError: [Errno 98] Address already in use
+        `b'x'
 `,
-        ``,
+        `OSError
+`,
+        `b''
+`,
       ],
-      correct: 1,
-      explanation: `The kernel puts the connection in <code>TIME_WAIT</code> state for a while.
-
-
-
-<code>SO_REUSEADDR</code> tells the kernel to allow binds to <code>TIME_WAIT</code>s.`,
+      correct: 0,
+      explanation: `<p><code>srv</code> spun off <code>conn</code>, but they're independent.</p>
+`,
     },
 
     {
-      preface: ``,
+      preface: `<p>What if we <code>listen()</code> without a <code>bind()</code>?</p>
+`,
       code: `import socket
 
 sock = socket.socket()
@@ -381,96 +437,20 @@ sock.listen()
 ip, _ = sock.getsockname()
 print(ip)
 `,
-      answers: [``, ``, ``],
-      correct: 0,
-      explanation: `<code>listen()</code> without <code>bind()</code>
-
-
-<code>0.0.0.0</code> is the IPv4 wildcard address, meaning "listen on all the host's IPs".
-
-The kernel chooses an ephemeral port.`,
-    },
-
-    {
-      preface: ``,
-      code: `import socket
-
-sock = socket.socket()
-sock.bind(("127.0.0.1", 44444))
-sock.listen()
-sock.connect(("127.0.0.1", 55555))`,
-      answers: [``, ``, ``],
-      correct: 0,
-      explanation: `Calling <code>sock.listen()</code> makes <code>sock</code> a passive or listening socket.`,
-    },
-
-    {
-      preface: ``,
-      code: `import socket
-from threading import Thread
-
-
-def client():
-    sock = socket.create_connection(("127.0.0.1", 65432))
-    sock.send(b"x")
-
-
-srv = socket.create_server(("127.0.0.1", 65432))
-Thread(target=client).start()
-conn, _ = srv.accept()
-srv.close()
-print(conn.recv(1))
-`,
       answers: [
-        ``,
-        `b'x'
+        `0.0.0.0
 `,
-        ``,
-      ],
-      correct: 1,
-      explanation: `<code>srv</code> and <code>conn</code> are independent sockets.
-
-
-
-<code>srv.close()</code> leaves untouched <code>conn</code> and the connection.`,
-    },
-
-    {
-      preface: ``,
-      code: `import socket
-from threading import Thread
-
-
-def client():
-    sock = socket.socket()
-    sock.settimeout(1)
-    sock.connect(("127.0.0.1", 65432))
-    print("connected")
-    sock.send(b"x")
-    print("sent")
-    sock.recv(1024)
-    print("received")
-
-
-srv = socket.create_server(("127.0.0.1", 65432))
-Thread(target=client).start()
+        `127.0.0.1
 `,
-      answers: [
-        `connected
-sent
-<~1s>
-Exception in thread Thread-1 (client):
-TimeoutError: timed out
+        `ArgumentError
 `,
-        ``,
-        ``,
       ],
       correct: 0,
-      explanation: `No <code>accept()</code>.
-
-
-
-But it's the kernel that handshakes and buffers, so the client can still connect and send.`,
+      explanation: `<p>
+  <code>0.0.0.0</code> is the IPv4 wildcard address, meaning "listen on all the
+  host's IPs". The kernel chooses an ephemeral port.
+</p>
+`,
     },
   ],
 
@@ -487,18 +467,22 @@ print("done")
 print("here")
 `,
       answers: [
+        `Not me!
+
+(Tip: answer via 1, 2, 3.)
+`,
         `<~3s>
 done
 <~3s>
 done
 here
 `,
-        `NOT ME!
-`,
-        `NOT ME!
+        `Not me!
+
+(Tip: Advance via <Space> or <Enter>.)
 `,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>One process, one thread, no event loop.</p>
 
 <p>Simple. Slow.</p>
@@ -524,11 +508,6 @@ thread2.start()
 print("here")
 `,
       answers: [
-        `<~3s>
-here
-done
-done
-`,
         `here
 <~3s>
 done
@@ -540,8 +519,13 @@ done
 done
 here
 `,
+        `<~3s>
+here
+done
+done
+`,
       ],
-      correct: 1,
+      correct: 0,
       explanation: `<p>A thread runs only when it holds the Global Interpreter Lock.</p>
 
 <p>
@@ -583,15 +567,15 @@ done
 done
 here
 `,
-        `<~3s>
-done
-done
-here
-`,
         `here
 <~3s>
 done
 done
+`,
+        `<~3s>
+done
+done
+here
 `,
       ],
       correct: 0,
@@ -669,15 +653,15 @@ thread2.start()
 print("here")
 `,
       answers: [
-        `<~6s>
-done
-done
-here
-`,
         `here
 <~6s>
 done
 done
+`,
+        `<~6s>
+done
+done
+here
 `,
         `here
 <~3s>
@@ -685,7 +669,7 @@ done
 done
 `,
       ],
-      correct: 1,
+      correct: 0,
       explanation: `<p>
   The main thread runs when <code>thread1</code> and <code>thread2</code> are
   paused.
@@ -719,6 +703,11 @@ thread2.join()
 print("here")
 `,
       answers: [
+        `here
+<~6s>
+done
+done
+`,
         `<~3s>
 done
 <~3s>
@@ -730,13 +719,8 @@ done
 done
 here
 `,
-        `here
-<~6s>
-done
-done
-`,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>Same as before: <code>join()</code> blocks until the receiver completes.</p>
 `,
     },
@@ -762,16 +746,16 @@ thread2.join()
 print("here")
 `,
       answers: [
+        `<~6s>
+done
+done
+here
+`,
         `here
 <~3s>
 done
 <~3s>
 done
-`,
-        `<~6s>
-done
-done
-here
 `,
         `<~3s>
 done
@@ -780,7 +764,7 @@ done
 here
 `,
       ],
-      correct: 1,
+      correct: 0,
       explanation: `<p>
   <code>thread1.join()</code> blocks the main thread, not <code>thread2</code>.
 </p>
@@ -855,17 +839,17 @@ print("here")
 Traceback (most recent call last):
   ...
 Exception
+here
+`,
+        `here
 `,
         `Exception in thread Thread-1 (bad):
 Traceback (most recent call last):
   ...
 Exception
-here
-`,
-        `here
 `,
       ],
-      correct: 1,
+      correct: 0,
       explanation: `<p>
   <code>threading.excepthook()</code> prints on stderr an exception raised by
   <code>Thread.run()</code>.
@@ -900,6 +884,11 @@ if __name__ == "__main__":
 `,
       answers: [
         `here
+<~6s>
+done
+done
+`,
+        `here
 <~3s>
 done
 done
@@ -910,13 +899,8 @@ done
 done
 here
 `,
-        `here
-<~6s>
-done
-done
-`,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>Process objects run in separate processes, each with their own GIL.</p>
 
 <p>So they <em>can</em> run in parallel.</p>
@@ -948,14 +932,14 @@ if __name__ == "__main__":
     print("here")
 `,
       answers: [
-        `<~3s>
+        `<~6s>
 done
-<~3s>
 done
 here
 `,
-        `<~6s>
+        `<~3s>
 done
+<~3s>
 done
 here
 `,
@@ -994,6 +978,7 @@ if __name__ == "__main__":
 Traceback (most recent call last):
   ...
 Exception
+here
 `,
         `here
 `,
@@ -1001,10 +986,9 @@ Exception
 Traceback (most recent call last):
   ...
 Exception
-here
 `,
       ],
-      correct: 2,
+      correct: 0,
       explanation: `<p>
   Same story as for threads: the exception is printed on stderr but doesn't
   propagate to the main process.
@@ -1034,6 +1018,8 @@ asyncio.run(main())
 `,
       answers: [
         `here
+`,
+        `here
 <~3s>
 done
 done
@@ -1044,10 +1030,8 @@ done
 done
 here
 `,
-        `here
-`,
       ],
-      correct: 2,
+      correct: 0,
       explanation: `<p>
   A function defined with <code>async def</code> is a coroutine function and
   returns a coroutine.
@@ -1078,12 +1062,6 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `<~3s>
-done
-<~3s>
-done
-here
-`,
         `here
 <~3s>
 done
@@ -1091,11 +1069,17 @@ done
 `,
         `<~3s>
 done
+<~3s>
+done
+here
+`,
+        `<~3s>
+done
 done
 here
 `,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>Awaiting a coroutine blocks until it completes.</p>
 
 <p>No speedup yet.</p>
@@ -1122,24 +1106,24 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
+        `<~3s>
+here
+<~3s>
+here
+done
+`,
+        `<~3s>
+here
+here
+done
+`,
         `done
 <~3s>
 here
 here
 `,
-        `<~3s>
-here
-here
-done
-`,
-        `<~3s>
-here
-<~3s>
-here
-done
-`,
       ],
-      correct: 2,
+      correct: 0,
       explanation: `<p>
   <code>await asyncio.sleep()</code> does pass control to the event loop, but
   there's no other work scheduled at that point.
@@ -1167,24 +1151,24 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `<~3s>
-done
-<~3s>
-done
-here
-`,
-        `<~3s>
-done
-done
-here
-`,
         `here
 <~3s>
 done
 done
 `,
+        `<~3s>
+done
+done
+here
+`,
+        `<~3s>
+done
+<~3s>
+done
+here
+`,
       ],
-      correct: 0,
+      correct: 2,
       explanation: `<p><code>gather()</code> runs the awaitables concurrently.</p>
 
 <p>
@@ -1221,18 +1205,18 @@ done
 done
 here
 `,
-        `<~3s>
-done
-done
-here
-`,
         `here
 <~3s>
 done
 done
 `,
+        `<~3s>
+done
+done
+here
+`,
       ],
-      correct: 1,
+      correct: 2,
       explanation: `<p>Speedup at last!</p>
 `,
     },
@@ -1260,24 +1244,24 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
+        `<~3s>
+done
+done
+here
+`,
+        `<~3s>
+done
+<~3s>
+done
+here
+`,
         `here
 <~3s>
 done
 done
 `,
-        `<~3s>
-done
-<~3s>
-done
-here
-`,
-        `<~3s>
-done
-done
-here
-`,
       ],
-      correct: 2,
+      correct: 0,
       explanation: `<p>
   <code>asyncio.to_thread()</code> is useful for async-unaware io-bound
   functions.
@@ -1310,10 +1294,10 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `it depends
-`,
         `in foo
 in main
+`,
+        `it depends
 `,
         `in main
 in foo
@@ -1344,16 +1328,16 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `in foo
-in main
-`,
-        `it depends
-`,
         `in main
 in foo
 `,
+        `it depends
+`,
+        `in foo
+in main
+`,
       ],
-      correct: 0,
+      correct: 2,
       explanation: `<p>Awaiting a task passes control to the event loop.</p>
 `,
     },
@@ -1380,16 +1364,16 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `it depends
-`,
         `in bar
 in foo
 `,
         `in foo
 in bar
 `,
+        `it depends
+`,
       ],
-      correct: 1,
+      correct: 0,
       explanation: `<p>Awaiting a coroutine doesn't pass control to the event loop.</p>
 `,
     },
@@ -1416,16 +1400,16 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `in foo
-in bar
-`,
         `in bar
 in foo
+`,
+        `in foo
+in bar
 `,
         `it depends
 `,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>Awaiting a task passes control to the event loop.</p>
 `,
     },
@@ -1453,21 +1437,21 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `Traceback (most recent call last):
-  ...
-Exception
-done
-`,
-        `Traceback (most recent call last):
-  ...
-Exception
-`,
         `<~3s>
 here
 done
 `,
+        `Traceback (most recent call last):
+  ...
+Exception
+done
+`,
+        `Traceback (most recent call last):
+  ...
+Exception
+`,
       ],
-      correct: 1,
+      correct: 2,
       explanation: `<p>
   By default, <code>gather()</code> propagates the first raised exception, but
   <em>doesn't</em> cancel its other awaitables.
