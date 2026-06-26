@@ -1,6 +1,14 @@
 import socket
+from threading import Thread
 
-sock1 = socket.socket()
-sock2 = socket.socket()
-sock1.bind(("127.0.0.1", 65432))
-sock2.bind(("127.0.0.1", 65432))
+
+def client():
+    sock = socket.create_connection(("127.0.0.1", 44444))
+    sock.send(b"x")
+
+
+srv = socket.create_server(("127.0.0.1", 44444))
+Thread(target=client).start()
+conn, _ = srv.accept()
+srv.close()
+print(conn.recv(1))

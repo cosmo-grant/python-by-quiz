@@ -1,5 +1,0 @@
-connected
-sent
-<~1s>
-Exception in thread Thread-1 (client):
-TimeoutError: timed out

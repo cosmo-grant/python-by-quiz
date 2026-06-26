@@ -1,1 +1,3 @@
-b'x'
+<class 'socket.socket'>
+<class 'socket.socket'>
+<class 'socket.socket'>

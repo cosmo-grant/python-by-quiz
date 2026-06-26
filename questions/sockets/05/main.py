@@ -3,10 +3,12 @@ from threading import Thread
 
 
 def client():
-    socket.create_connection(("127.0.0.1", 65432))
+    sock = socket.socket()
+    sock.connect(("127.0.0.1", 44444))
+    print("connected")
+    sock.send(b"x")
+    print("sent")
 
 
-srv = socket.create_server(("127.0.0.1", 65432))
+srv = socket.create_server(("127.0.0.1", 44444))
 Thread(target=client).start()
-conn, _ = srv.accept()
-print(conn.getsockname())

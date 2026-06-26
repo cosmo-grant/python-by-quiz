@@ -1,2 +1,9 @@
-For a non-blocking socket, operations fail if they can't be completed
-immediately.
+<p>
+  The kernel puts the active closer in <code>TIME_WAIT</code> for a while, else
+  delayed packets might bleed into fresh connections.
+</p>
+
+<p>
+  Set the <code>SO_REUSEADDR</code> option to allow binds to
+  <code>TIME_WAIT</code>s.
+</p>

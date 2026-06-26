@@ -1,5 +1,6 @@
 import socket
 
 sock = socket.socket()
-sock.bind(("127.0.0.1", 44444))
-sock.bind(("127.0.0.1", 55555))
+sock.listen()
+ip, _ = sock.getsockname()
+print(ip)

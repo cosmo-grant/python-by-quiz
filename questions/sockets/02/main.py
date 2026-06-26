@@ -1,4 +1,13 @@
 import socket
+from threading import Thread
 
-sock = socket.socket()
-sock.connect(("127.0.0.1", 65432))  # nothing listening
+
+def client():
+    sock = socket.create_connection(("127.0.0.1", 44444))
+    sock.send(b"x")
+
+
+srv = socket.create_server(("127.0.0.1", 44444))
+Thread(target=client).start()
+conn, _ = srv.accept()
+print(conn.recv(1))
