@@ -1,0 +1,9 @@
+The <code>yield from </code>expression allows a generator to delegate to an
+arbitrary iterator.
+
+<pre><code class="lang-text">yield from iterable</code></pre>
+is like
+<pre><code class="lang-text">for item in iterable:
+    yield item</code></pre>
+except it accommodates calls to <code>send()</code>, <code>throw()</code> and
+<code>close()</code>.
