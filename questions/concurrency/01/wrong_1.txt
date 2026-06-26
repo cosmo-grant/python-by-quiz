@@ -1,3 +1,3 @@
 Not me!
 
-(Tip: <Space> or <Enter> to go to the next question.)
+(Tip: advance via <Space> or <Enter>.)
