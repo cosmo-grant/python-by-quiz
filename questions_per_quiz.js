@@ -1,7 +1,9 @@
 // Generated automatically. Do not edit.
 
 const QUESTIONS_PER_QUIZ = {
+  
   sockets: [
+    
     {
       preface: `<p>What does this output?</p>
 `,
@@ -23,22 +25,22 @@ conn, _ = srv.accept()
 print(conn.recv(1))
 `,
       answers: [
-        `Not me!
-
-(Tip: Advance via <Space> or <Enter>.)
+        `b'x'
 `,
         `Not me!
 
 (Tip: answer via 1, 2, 3.)
 `,
-        `b'x'
+        `Not me!
+
+(Tip: advance via <Space> or <Enter>.)
 `,
       ],
-      correct: 2,
+      correct: 0,
       explanation: `<p>A minimal example of socket communication.</p>
 `,
     },
-
+    
     {
       preface: `<p>How about this?</p>
 `,
@@ -59,16 +61,16 @@ print(conn.recv(1))
       answers: [
         `b''
 `,
-        `b'x'
-`,
         `None
 `,
+        `b'x'
+`,
       ],
-      correct: 1,
+      correct: 2,
       explanation: `<p>As before, but taking advantage of convenience functions.</p>
 `,
     },
-
+    
     {
       preface: `<p>Let's dig deeper. Output?</p>
 `,
@@ -88,17 +90,17 @@ print(type(srv).__name__)
 print(type(conn).__name__)
 `,
       answers: [
-        `<class 'socket.socket'>
-<class 'socket.socket'>
-<class 'socket.socket'>
-`,
-        `ServerSocket
-ClientSocket
-ClientSocket
+        `socket
+socket
+socket
 `,
         `socket
 connection
 connection
+`,
+        `ServerSocket
+ClientSocket
+ClientSocket
 `,
       ],
       correct: 0,
@@ -110,7 +112,7 @@ connection
 <p>But they're all just sockets.</p>
 `,
     },
-
+    
     {
       preface: `<p><code>accept()</code> returns a new local socket, but at what address?</p>
 `,
@@ -128,18 +130,18 @@ conn, _ = srv.accept()
 print(conn.getsockname())
 `,
       answers: [
+        `('127.0.0.1', 44444)
+`,
         `('0.0.0.0', 44444)
 `,
         `('127.0.0.1', 0)
 `,
-        `('127.0.0.1', 44444)
-`,
       ],
-      correct: 2,
+      correct: 0,
       explanation: `<p>New socket. Same address.</p>
 `,
     },
-
+    
     {
       preface: `<p>How far can you get without a peer?</p>
 `,
@@ -160,22 +162,22 @@ Thread(target=client).start()
 `,
       answers: [
         `connected
-sent
+...
 `,
         `connected
-...
+sent
 `,
         `...
 `,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>
   No <code>accept()</code>. But it's the <em>kernel</em> that handshakes and
   buffers, so the client can still connect and send.
 </p>
 `,
     },
-
+    
     {
       preface: `<p>How do <code>recv()</code> work?</p>
 `,
@@ -197,10 +199,10 @@ print(conn.recv(1))
 `,
       answers: [
         `b'x'
-...
+ConnectionClosedError: [Errno NN] Connection closed by peer
 `,
         `b'x'
-ConnectionClosedError: [Errno NN] Connection closed by peer
+...
 `,
         `b'x'
 b''
@@ -212,7 +214,7 @@ b''
 </p>
 `,
     },
-
+    
     {
       preface: `<p>What if there's nothing to receive yet?</p>
 `,
@@ -239,21 +241,21 @@ here
 b'x'
 `,
         `here
+b''
+`,
+        `here
 <~3s>
 b'x'
 `,
-        `here
-b''
-`,
       ],
-      correct: 1,
+      correct: 2,
       explanation: `<p>
   <code>recv(n)</code> blocks until data is available, then returns up to
   <code>n</code> bytes.
 </p>
 `,
     },
-
+    
     {
       preface: `<p>Double trouble.</p>
 `,
@@ -276,26 +278,26 @@ conn, _ = srv.accept()
 print(conn.recv(2))
 `,
       answers: [
-        `<~2s>
-b'xy'
+        `<~1s>
+b'x'
 `,
         `<~1s>
 b'x'
 <~1s>
 b'y'
 `,
-        `<~1s>
-b'x'
+        `<~2s>
+b'xy'
 `,
       ],
-      correct: 2,
+      correct: 0,
       explanation: `<p>
   To repeat: <code>recv(n)</code> blocks until data is available, then returns
   up to <code>n</code> bytes.
 </p>
 `,
     },
-
+    
     {
       preface: `<p>What if no one comes to the party?</p>
 `,
@@ -306,9 +308,9 @@ conn, _ = srv.accept()
 print(conn)
 `,
       answers: [
-        `None
-`,
         `ConnectionRefusedError
+`,
+        `None
 `,
         `...
 `,
@@ -322,7 +324,7 @@ print(conn)
 </p>
 `,
     },
-
+    
     {
       preface: `<p>If it doesn't block, what <em>does</em> it do?</p>
 `,
@@ -336,7 +338,9 @@ print(conn)
       answers: [
         `...
 `,
-        `BlockingIOError
+        `Traceback (most recent call last):
+  ...
+BlockingIOError: [Errno NN] Resource temporarily unavailable
 `,
         `None
 `,
@@ -348,7 +352,7 @@ print(conn)
 </p>
 `,
     },
-
+    
     {
       preface: ``,
       code: `import socket
@@ -363,28 +367,28 @@ def client():
 srv1 = socket.create_connection(("127.0.0.1", 44444))
 Thread(target=client).start()
 conn, _ = srv1.accept()
-conn.recv(1)
+print(conn.recv(1))
 conn.close()
 srv1.close()
 
 srv2 = socket.create_connection(("127.0.0.1", 44444))
 Thread(target=client).start()
-conn.recv(1)
+print(conn.recv(1))
 conn.close()
 srv1.close()
 `,
       answers: [
+        `b'x'
+OSError: [Errno NN] Address already in use
+`,
         `b'x
 b''
-`,
-        `b'x'
-OSError: [Errno 48] Address already in use
 `,
         `b'x'
 b'x'
 `,
       ],
-      correct: 1,
+      correct: 0,
       explanation: `<p>
   The kernel puts the active closer in <code>TIME_WAIT</code> for a while, else
   delayed packets might bleed into fresh connections.
@@ -396,7 +400,7 @@ b'x'
 </p>
 `,
     },
-
+    
     {
       preface: ``,
       code: `import socket
@@ -417,16 +421,16 @@ print(conn.recv(1))
       answers: [
         `b'x'
 `,
-        `OSError
-`,
         `b''
+`,
+        `OSError
 `,
       ],
       correct: 0,
       explanation: `<p><code>srv</code> spun off <code>conn</code>, but they're independent.</p>
 `,
     },
-
+    
     {
       preface: `<p>What if we <code>listen()</code> without a <code>bind()</code>?</p>
 `,
@@ -438,23 +442,25 @@ ip, _ = sock.getsockname()
 print(ip)
 `,
       answers: [
+        `ArgumentError
+`,
         `0.0.0.0
 `,
         `127.0.0.1
 `,
-        `ArgumentError
-`,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>
   <code>0.0.0.0</code> is the IPv4 wildcard address, meaning "listen on all the
   host's IPs". The kernel chooses an ephemeral port.
 </p>
 `,
     },
+    
   ],
-
+  
   concurrency: [
+    
     {
       preface: `<p>What does this output?</p>
 `,
@@ -467,10 +473,6 @@ print("done")
 print("here")
 `,
       answers: [
-        `Not me!
-
-(Tip: answer via 1, 2, 3.)
-`,
         `<~3s>
 done
 <~3s>
@@ -479,16 +481,20 @@ here
 `,
         `Not me!
 
-(Tip: Advance via <Space> or <Enter>.)
+(Tip: advance via <Space> or <Enter>.)
+`,
+        `Not me!
+
+(Tip: answer via 1, 2, 3.)
 `,
       ],
-      correct: 1,
+      correct: 0,
       explanation: `<p>One process, one thread, no event loop.</p>
 
 <p>Simple. Slow.</p>
 `,
     },
-
+    
     {
       preface: `<p>Let's move the work into threads. Output?</p>
 `,
@@ -508,6 +514,11 @@ thread2.start()
 print("here")
 `,
       answers: [
+        `<~3s>
+here
+done
+done
+`,
         `here
 <~3s>
 done
@@ -519,13 +530,8 @@ done
 done
 here
 `,
-        `<~3s>
-here
-done
-done
-`,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>A thread runs only when it holds the Global Interpreter Lock.</p>
 
 <p>
@@ -539,7 +545,7 @@ done
 </p>
 `,
     },
-
+    
     {
       preface: `<p>What if we <code>join()</code> them?</p>
 `,
@@ -563,7 +569,6 @@ print("here")
       answers: [
         `<~3s>
 done
-<~3s>
 done
 here
 `,
@@ -574,15 +579,16 @@ done
 `,
         `<~3s>
 done
+<~3s>
 done
 here
 `,
       ],
-      correct: 0,
+      correct: 2,
       explanation: `<p><code>join()</code> blocks until the receiver completes.</p>
 `,
     },
-
+    
     {
       preface: `<p>Does re-ordering make a difference?</p>
 `,
@@ -609,16 +615,16 @@ done
 done
 here
 `,
+        `here
+<~3s>
+done
+done
+`,
         `<~3s>
 done
 <~3s>
 done
 here
-`,
-        `here
-<~3s>
-done
-done
 `,
       ],
       correct: 0,
@@ -633,7 +639,7 @@ done
 </p>
 `,
     },
-
+    
     {
       preface: `<p>How about cpu-bound threads?</p>
 `,
@@ -653,15 +659,15 @@ thread2.start()
 print("here")
 `,
       answers: [
-        `here
-<~6s>
-done
-done
-`,
         `<~6s>
 done
 done
 here
+`,
+        `here
+<~6s>
+done
+done
 `,
         `here
 <~3s>
@@ -669,7 +675,7 @@ done
 done
 `,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>
   The main thread runs when <code>thread1</code> and <code>thread2</code> are
   paused.
@@ -681,7 +687,7 @@ done
 </p>
 `,
     },
-
+    
     {
       preface: `<p>Ok, let's <code>join()</code> again.</p>
 `,
@@ -703,10 +709,10 @@ thread2.join()
 print("here")
 `,
       answers: [
-        `here
-<~6s>
+        `<~3s>
 done
 done
+here
 `,
         `<~3s>
 done
@@ -714,17 +720,17 @@ done
 done
 here
 `,
-        `<~3s>
+        `here
+<~6s>
 done
 done
-here
 `,
       ],
       correct: 1,
       explanation: `<p>Same as before: <code>join()</code> blocks until the receiver completes.</p>
 `,
     },
-
+    
     {
       preface: `<p>Does re-ordering make a difference?</p>
 `,
@@ -746,6 +752,12 @@ thread2.join()
 print("here")
 `,
       answers: [
+        `<~3s>
+done
+<~3s>
+done
+here
+`,
         `<~6s>
 done
 done
@@ -757,14 +769,8 @@ done
 <~3s>
 done
 `,
-        `<~3s>
-done
-<~3s>
-done
-here
-`,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>
   <code>thread1.join()</code> blocks the main thread, not <code>thread2</code>.
 </p>
@@ -772,7 +778,7 @@ here
 <p>But they're still cpu-bound so the total time is unchanged.</p>
 `,
     },
-
+    
     {
       preface: `<p>Same as the previous question, no?</p>
 `,
@@ -818,7 +824,7 @@ here
 </p>
 `,
     },
-
+    
     {
       preface: `<p>What if threads go bad?</p>
 `,
@@ -835,13 +841,13 @@ thread.join()
 print("here")
 `,
       answers: [
+        `here
+`,
         `Exception in thread Thread-1 (bad):
 Traceback (most recent call last):
   ...
 Exception
 here
-`,
-        `here
 `,
         `Exception in thread Thread-1 (bad):
 Traceback (most recent call last):
@@ -849,7 +855,7 @@ Traceback (most recent call last):
 Exception
 `,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>
   <code>threading.excepthook()</code> prints on stderr an exception raised by
   <code>Thread.run()</code>.
@@ -861,7 +867,7 @@ Exception
 </p>
 `,
     },
-
+    
     {
       preface: `<p>Let's swap threads for processes.</p>
 `,
@@ -883,6 +889,12 @@ if __name__ == "__main__":
     print("here")
 `,
       answers: [
+        `<~3s>
+done
+<~3s>
+done
+here
+`,
         `here
 <~6s>
 done
@@ -893,14 +905,8 @@ done
 done
 done
 `,
-        `<~3s>
-done
-<~3s>
-done
-here
-`,
       ],
-      correct: 1,
+      correct: 2,
       explanation: `<p>Process objects run in separate processes, each with their own GIL.</p>
 
 <p>So they <em>can</em> run in parallel.</p>
@@ -908,7 +914,7 @@ here
 <p>But for io-bound work threads might be the better choice.</p>
 `,
     },
-
+    
     {
       preface: `<p>What about cpu-bound work?</p>
 `,
@@ -956,7 +962,7 @@ here
 </p>
 `,
     },
-
+    
     {
       preface: `<p>What if processes go bad?</p>
 `,
@@ -980,12 +986,12 @@ Traceback (most recent call last):
 Exception
 here
 `,
-        `here
-`,
         `Process Process-1:
 Traceback (most recent call last):
   ...
 Exception
+`,
+        `here
 `,
       ],
       correct: 0,
@@ -995,7 +1001,7 @@ Exception
 </p>
 `,
     },
-
+    
     {
       preface: `<p>A third approach: <code>asyncio</code>.</p>
 `,
@@ -1019,16 +1025,16 @@ asyncio.run(main())
       answers: [
         `here
 `,
-        `here
-<~3s>
-done
-done
-`,
         `<~3s>
 done
 <~3s>
 done
 here
+`,
+        `here
+<~3s>
+done
+done
 `,
       ],
       correct: 0,
@@ -1040,7 +1046,7 @@ here
 <p>Just creating a coroutine doens't schedule it on the event loop.</p>
 `,
     },
-
+    
     {
       preface: `<p>Ok, so let's <code>await</code>.</p>
 `,
@@ -1069,23 +1075,23 @@ done
 `,
         `<~3s>
 done
-<~3s>
 done
 here
 `,
         `<~3s>
 done
+<~3s>
 done
 here
 `,
       ],
-      correct: 1,
+      correct: 2,
       explanation: `<p>Awaiting a coroutine blocks until it completes.</p>
 
 <p>No speedup yet.</p>
 `,
     },
-
+    
     {
       preface: `<p>We need async-aware functions, like <code>asyncio.sleep()</code>, right?</p>
 `,
@@ -1108,12 +1114,12 @@ asyncio.run(main())
       answers: [
         `<~3s>
 here
-<~3s>
 here
 done
 `,
         `<~3s>
 here
+<~3s>
 here
 done
 `,
@@ -1123,14 +1129,14 @@ here
 here
 `,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>
   <code>await asyncio.sleep()</code> does pass control to the event loop, but
   there's no other work scheduled at that point.
 </p>
 `,
     },
-
+    
     {
       preface: `<p>What if we <code>gather()</code> them instead?</p>
 `,
@@ -1151,24 +1157,24 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
+        `<~3s>
+done
+done
+here
+`,
+        `<~3s>
+done
+<~3s>
+done
+here
+`,
         `here
 <~3s>
 done
 done
 `,
-        `<~3s>
-done
-done
-here
-`,
-        `<~3s>
-done
-<~3s>
-done
-here
-`,
       ],
-      correct: 2,
+      correct: 1,
       explanation: `<p><code>gather()</code> runs the awaitables concurrently.</p>
 
 <p>
@@ -1177,7 +1183,7 @@ here
 </p>
 `,
     },
-
+    
     {
       preface: `<p>
   What if we <code>gather()</code> <em>and</em> <code>asyncio.sleep()</code>?
@@ -1220,7 +1226,7 @@ here
       explanation: `<p>Speedup at last!</p>
 `,
     },
-
+    
     {
       preface: `<p>Remember threads?</p>
 `,
@@ -1244,24 +1250,24 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `<~3s>
-done
-done
-here
-`,
-        `<~3s>
-done
-<~3s>
-done
-here
-`,
         `here
 <~3s>
 done
 done
 `,
+        `<~3s>
+done
+done
+here
+`,
+        `<~3s>
+done
+<~3s>
+done
+here
+`,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>
   <code>asyncio.to_thread()</code> is useful for async-unaware io-bound
   functions.
@@ -1275,7 +1281,7 @@ done
 </p>
 `,
     },
-
+    
     {
       preface: `<p>Know the differences between coroutines and tasks?</p>
 `,
@@ -1294,22 +1300,22 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `in foo
-in main
-`,
         `it depends
 `,
         `in main
 in foo
 `,
+        `in foo
+in main
+`,
       ],
-      correct: 2,
+      correct: 1,
       explanation: `<p><code>create_task()</code> schedules the task for execution.</p>
 
 <p>But the main coroutine keeps control.</p>
 `,
     },
-
+    
     {
       preface: `<p>How about this?</p>
 `,
@@ -1328,20 +1334,20 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `in main
-in foo
-`,
         `it depends
 `,
         `in foo
 in main
 `,
+        `in main
+in foo
+`,
       ],
-      correct: 2,
+      correct: 1,
       explanation: `<p>Awaiting a task passes control to the event loop.</p>
 `,
     },
-
+    
     {
       preface: `<p>And this?</p>
 `,
@@ -1364,20 +1370,20 @@ async def main():
 asyncio.run(main())
 `,
       answers: [
-        `in bar
-in foo
-`,
         `in foo
 in bar
+`,
+        `in bar
+in foo
 `,
         `it depends
 `,
       ],
-      correct: 0,
+      correct: 1,
       explanation: `<p>Awaiting a coroutine doesn't pass control to the event loop.</p>
 `,
     },
-
+    
     {
       preface: `<p>Last one on this theme.</p>
 `,
@@ -1403,17 +1409,17 @@ asyncio.run(main())
         `in bar
 in foo
 `,
+        `it depends
+`,
         `in foo
 in bar
 `,
-        `it depends
-`,
       ],
-      correct: 1,
+      correct: 2,
       explanation: `<p>Awaiting a task passes control to the event loop.</p>
 `,
     },
-
+    
     {
       preface: `<p>What if awaitables go bad?</p>
 `,
@@ -1444,14 +1450,14 @@ done
         `Traceback (most recent call last):
   ...
 Exception
-done
 `,
         `Traceback (most recent call last):
   ...
 Exception
+done
 `,
       ],
-      correct: 2,
+      correct: 1,
       explanation: `<p>
   By default, <code>gather()</code> propagates the first raised exception, but
   <em>doesn't</em> cancel its other awaitables.
@@ -1462,5 +1468,7 @@ Exception
 </p>
 `,
     },
+    
   ],
+  
 };
