@@ -1,0 +1,5 @@
+output_verbosity = 1
+timeout = 10
+
+[images]
+py = "python:3.14"
